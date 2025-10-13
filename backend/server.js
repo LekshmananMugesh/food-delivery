@@ -1,66 +1,56 @@
-import express from "express"
-import cors from "cors"
+import express from "express";
+import cors from "cors";
 import { connectDB } from "./config/db.js";
 import foodRouter from "./routes/foodRouter.js";
 import userRouter from "./routes/userRoute.js";
-import 'dotenv/config'
 import cartRouter from "./routes/cartRoute.js";
-import orderModel from "./models/orderModel.js";
 import orderRouter from "./routes/orderRoute.js";
+import 'dotenv/config';
 import path from "path";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename)
+const __dirname = path.dirname(__filename);
 
-//app config
-const app=express();
-const port=4000
+// App config
+const app = express();
+const port = process.env.PORT || 4000;
 
-//middleware
-app.use(express.json())
-app.use(cors())
+// Middleware
+app.use(express.json());
+app.use(cors());
 
-//db connection 
+// Database connection
 connectDB();
 
-//api endpoint
-app.use("/api/food",foodRouter)
-app.use("/images",express.static('uploads'))
-app.use("/api/user",userRouter)
-app.use("/api/cart",cartRouter)
-app.use("/api/order",orderRouter)
+// API routes
+app.use("/api/food", foodRouter);
+app.use("/images", express.static("uploads"));
+app.use("/api/user", userRouter);
+app.use("/api/cart", cartRouter);
+app.use("/api/order", orderRouter);
 
+// Test route
+app.get("/api", (req, res) => {
+  res.send("API Working ✅");
+});
 
-app.get("/",(req,res)=>{
-    res.send("API Working")
-})
-// Serve frontend React build
-app.use('/', express.static(path.join(__dirname, '../frontend/dist')));
+// Serve frontend build
+app.use("/", express.static(path.join(__dirname, "../frontend/dist")));
 
-// Serve admin React build
-app.use('/admin', express.static(path.join(__dirname, '../admin/dist')));
+// Serve admin build
+app.use("/admin", express.static(path.join(__dirname, "../admin/dist")));
 
-// Catch-all for React routing (frontend/admin)
-app.get('/', (req, res) => {
-  if (req.path.startsWith('/admin')) {
-    res.sendFile(path.join(__dirname, '../admin/dist', 'index.html'));
+// Handle client-side routing (React Router)
+app.get("*", (req, res) => {
+  if (req.path.startsWith("/admin")) {
+    res.sendFile(path.join(__dirname, "../admin/dist", "index.html"));
   } else {
-    res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
+    res.sendFile(path.join(__dirname, "../frontend/dist", "index.html"));
   }
 });
 
-if (process.env.NODE_ENV === "production") {
-  // Serve the frontend
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
-
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend/dist", "index.html"));
-  });
-}
-
-
-app.listen(port,()=>{
-    console.log(`Server Started on http://localhost:${port}`)
-})
-
+// Start server
+app.listen(port, () => {
+  console.log(`Server started on http://localhost:${port}`);
+});
