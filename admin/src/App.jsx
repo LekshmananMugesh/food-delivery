@@ -10,7 +10,7 @@ import Orders from './pages/Orders/Orders'
 
 const App = () => {
 
-const url = import.meta.env.VITE_API_URL || ""
+const url = import.meta.env.VITE_API_URL_ || ""
 
   return (
     <div>
