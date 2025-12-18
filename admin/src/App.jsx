@@ -20,7 +20,6 @@ const url = import.meta.env.VITE_API_URL_ || ""
       <div className="app-content">
         <Sidebar/>
         <Routes>
-          <Route path="/" element={<List url={url} />} />
           <Route path="/add" element={<Add url={url}/>}/>
           <Route path="/list" element={<List url={url}/>}/>
           <Route path="/orders" element={<Orders url={url}/>}/>
