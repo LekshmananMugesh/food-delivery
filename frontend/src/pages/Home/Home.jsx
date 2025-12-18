@@ -1,22 +1,27 @@
-import React, { useState } from 'react'
-import './Home.css'
-import Header from '../../components/Navbar/Header/Header'
-import ExploreMenu from '../../components/Navbar/ExploreMenu/ExploreMenu'
-import FoodDisplay from '../../components/FoodDisplay/FoodDisplay'
-import AppDownload from '../../components/AppDownload/AppDownload'
+import { useEffect, useState } from "react";
+import "./Home.css";
 
-const Home = () => {
-  
-  const [category,setCategory]=useState("All");
+const API_URL = import.meta.env.VITE_API_URL;
+
+function Home() {
+  const [foodList, setFoodList] = useState([]);
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/food`)
+      .then(res => res.json())
+      .then(data => setFoodList(data));
+  }, []);
 
   return (
     <div>
-      <Header/>
-      <ExploreMenu category={category} setCategory={setCategory}/>
-      <FoodDisplay category={category}/>
-      <AppDownload/>
+      {foodList.map(item => (
+        <div key={item._id}>
+          <img src={`${API_URL}/images/${item.image}`} alt={item.name} />
+          <h3>{item.name}</h3>
+        </div>
+      ))}
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;
